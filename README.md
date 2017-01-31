@@ -28,13 +28,16 @@ The project uses the following software:
 + run command python lotofitems.py to insert initial data into tables
 + run command python final_project.py to start application
 + Launch browser and enter **http://localhost:8000/**
-+ NOTE: Authorized users can login using their Google account credentials
-+ Home page displays current categories and list of most recently added items
-+ User can navigate to view items under a category by clicking a category name
-+ On items page, user can click an item name to view the item details
-+ Home button will navigate back to home page
-+ Login button allows authorized user to login
-+ Authorized users can add a new category, add/edit/delete an item
++ Regular User
+        + Home page displays current categories and list of 10 most recently added items
+        + User can navigate to view items under a category by clicking a category name
+        + On items page, user can click an item name to view the item details
+        + Home button will navigate back to home page
++ Authorized user
+        + Can login using their Google account credentials
+        + Login button allows login
+        + Logoff button log offs from application
+        + Authorized users can add a new category, add/edit/delete an item
 
 #### JSON routes
 + Following routes are implemented to view data in JSON format

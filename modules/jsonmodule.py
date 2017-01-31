@@ -68,7 +68,7 @@ def items_latest_json():
     dictionary_list = []
     latest_item_list = []
     d_row = {}
-    for key, value in items_latest.items():
+    for key, value in items_latest:
         latest_item_list.append({'item': key,
                                  'category': value})
     d_row['RecentItems'] = latest_item_list

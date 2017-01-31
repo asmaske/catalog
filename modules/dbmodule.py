@@ -244,9 +244,13 @@ def get_items_latest_data():
     Args:
     """
     # get all records from items order by timestamp desc
+    count = 0
     outer_list = []
     items = session.query(Item).order_by(Item.create_ts.desc()).all()
     for item in items:
+        if count >= 10:
+            break
+        count += 1
         inner_list = []
         print item.item_name
         inner_list.append(item.item_name)
