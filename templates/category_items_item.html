@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{item_name}}</h3>
+                </div>
+                <div class="panel-body">
+                    <h4><span class="label label-default">Category</span></h4>
+                    <text class="form-control" readonly>{{category_name}}</text>
+                </div>
+                <div class="panel-body">
+                    <h4><span class="label label-default">Description</span></h4>
+                    <textarea class="form-control" rows="3" readonly>{{description}}</textarea>
+                </div>
+                <form method="post">
+                    <div class="form-group">
+                        <div class="col-sm-offset-4">
+                            <input type="submit" class="btn btn-primary" name="edit-delete" value="Edit">
+                            <input type="submit" class="btn btn-danger" name="edit-delete" value="Delete">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

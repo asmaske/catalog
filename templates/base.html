@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
+    <script>
+        function redirectToHome() {
+            window.location="/";
+            }
+        function redirectToLogin() {
+            window.location="/login";
+            }
+        function redirectToLogoff() {
+            window.location="/logoff";
+            }
+        function redirectToAddCategory() {
+            window.location="/catalog/category/add";
+            }
+        function redirectToItems(cat_name) {
+            var link = "/catalog/".concat(cat_name, "/items");
+            window.location=link;
+            }
+        function redirectToItemDetails(cat_name, item_name) {
+            var link = "/catalog/".concat(cat_name, "/", item_name);window.location=link;
+            }
+    </script>
+    <title>Ashok Maske Blog</title>
+</head>
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h1 >Udacity Catalog Project</h1>
+            <p>Catalog of Sport equipments.</p>
+        </div>
+        <nav class="navbar navbar-inverse">
+            <input id="homebut" type="submit" class="btn btn-success" name="home" value="Home"
+                   onclick="javascript:redirectToHome();return false;">
+            {% if login_status == 'TRUE' %}
+                <input id="logoffbut" type="submit" class="btn btn-success" name="logoffbut" value="Logoff"
+                    onclick="javascript:redirectToLogoff();return false;">
+            {% else %}
+                <input id="loginbut" type="submit" class="btn btn-success" name="loginbut" value="Login"
+                    onclick="javascript:redirectToLogin();return false;">
+            {% endif %}
+                    <!--<li><a id="hrefhome" href="/">Home</a></li>-->
+                    <!--<input id="loginlogoff" type="button" onclick="alert('Hello World!')" value="Click Me!">-->
+                    <!--<li><button onclick="javascript:redirectToLogin();return false;">Click me</button></li>-->
+        </nav>
+    </div>
+    {% block content %}
+    {% endblock %}
+    <hr>
+    <div class="container">
+        <footer id="mainfooter">
+            <p>&copy; 2017 Catalog Company, Inc.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
+

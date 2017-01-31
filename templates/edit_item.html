@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Edit Item</h3>
+                </div>
+                <div class="panel-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <h4><span class="label label-default">Item</span></h4>
+                            <text class="form-control" readonly>{{item_name}}</text>
+                        </div>
+                        <div class="form-group">
+                            <h4><span class="label label-default">Category</span></h4>
+                            <select class="form-control" name="edit-category">
+                                {% for category in categories %}
+                                    <option>{{category.category_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <h4><span class="label label-default">Description</span></h4>
+                            <textarea name="edit-desc" class="form-control" rows="3">{{description}}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-4">
+                                <input type="submit" class="btn btn-primary" name="save-cancel" value="Save">
+                                <input type="submit" class="btn btn-danger" name="save-cancel" value="Cancel">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

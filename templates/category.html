@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <form method="post">
+        <div class="col-md-4">
+            <div class="panel panel-primary">
+                {% if category_count == 0 %}
+                    <div class="panel-heading clearfix">Category
+                        <input id="addbut" type="submit" class="btn btn-success pull-right" name="addcat-additem"
+                               value="Add Category">
+                    </div>
+                {% else %}
+                    <div class="panel-heading clearfix">Category
+                    </div>
+                    <div class="list-group">
+                        {% for cat_name, item_count in categories_and_item_count %}
+                            <a href="#" onclick="javascript:redirectToItems('{{cat_name}}');return false;" class="list-group-item">
+                                <span class="badge">{{item_count}}</span>
+                                {{cat_name}}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="panel panel-primary">
+                {% if item_count == 0 %}
+                    <div class="panel-heading clearfix">Latest Items
+                        <input id="addbut2" type="submit" class="btn btn-success pull-right" name="addcat-additem"
+                               value="Add Item">
+                    </div>
+                {% else %}
+                    <div class="panel-heading clearfix">Latest Items
+                    </div>
+                    <ul class="list-group">
+                        {% for key,value in items_latest %}
+                            <li class="list-group-item">{{key}} [<strong>{{value}}</strong>]</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

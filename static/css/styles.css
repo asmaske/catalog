@@ -1,0 +1,25 @@
+#homebut, #loginbut, #logoffbut, #addbut, #addbut2 {
+    color: yellow;
+    background: green;
+}
+
+#mainfooter {
+    color: green;
+    font-weight: bold;
+}
+
+.jumbotron {
+    margin-top: 2em;
+    background-color: green;
+    padding: 0.5em;
+    color: white;
+    text-align: center;
+    h1 {
+        font-size: 2em;
+        text-shadow: 0.5em 0.2em yellow;
+    }
+    p {
+        font-size: 1.5em;
+        text-decoration: underline;
+    }
+}

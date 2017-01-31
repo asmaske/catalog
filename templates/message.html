@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+        {% if msg_status == 'success' %}
+            <div class="alert alert-success text-center" role="alert">{{message}}</div>
+        {% elif msg_status == 'failed' %}
+            <div class="alert alert-danger text-center" role="alert">{{message}}</div>
+        {% elif msg_status == 'logoff' %}
+            <div class="alert alert-success text-center" role="alert">{{message}}</div>
+        {% else %}
+            <div class="alert alert-danger text-center" role="alert">General Error</div>
+        {% endif %}
+        </div>
+     </div>
+ </div>
+{% endblock %}

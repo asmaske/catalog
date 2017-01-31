@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <form method="post">
+            <div class="col-md-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading clearfix">Category
+                        <input id="addbut" type="submit" class="btn btn-success pull-right" name="addcat-additem"
+                               value="Add Category">
+                    </div>
+                    <div class="list-group">
+                        {% for cat_name, item_count in categories_and_item_count %}
+                        <a href="#" onclick="javascript:redirectToItems('{{cat_name}}');return false;" class="list-group-item">
+                            <span class="badge">{{item_count}}</span>
+                            {{cat_name}}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading clearfix">
+                            {{category_name}} Items  <span class="badge">{{count}}</span>
+                            <input id="addbut2" type="submit" class="btn btn-success pull-right" name="addcat-additem"
+                                   value="Add Item">
+                        </div>
+                        <ul class="list-group">
+                            {% for item in category_items %}
+                            <a href="#" onclick="javascript:redirectToItemDetails('{{category_name}}','{{item.item_name}}');return false;"
+                                class="list-group-item">{{item.item_name}}
+                            </a>
+                            {% endfor %}
+                        </ul>
+                    </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

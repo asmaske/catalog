@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Delete Item</h3>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        <h4><span class="label label-default">Item</span></h4>
+                        <text class="form-control" readonly>{{item_name}}</text>
+                    </div>
+                    <div>
+                        <h4><span class="label label-default">Category</span></h4>
+                        <text class="form-control" readonly>{{category_name}}</text>
+                    </div>
+                    <form method="post">
+                        <div class="form-group">
+                            <div class="col-md-offset-4">
+                            <input type="submit" class="btn btn-primary" name="delete-cancel" value="Delete">
+                            <input type="submit" class="btn btn-danger" name="delete-cancel" value="Cancel">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
