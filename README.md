@@ -38,6 +38,7 @@ The project uses the following software:
         + Login button allows login
         + Logoff button log offs from application
         + Authorized users can add a new category, add/edit/delete an item
+        + In edit option, only description can be editted
 
 #### JSON routes
 + Following routes are implemented to view data in JSON format

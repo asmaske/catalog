@@ -86,20 +86,6 @@ def get_item_count():
     return session.query(Item).count()
 
 
-def get_category_name_for_item_data(item_name):
-    """
-        Returns category name for an item
-    Args:
-        item_name: name of item
-    """
-    item = session.query(Item).filter_by(
-        item_name=item_name).one()
-    cat_id = item.category_id
-    category = session.query(Category).filter_by(
-        category_id=cat_id).one()
-    return category.category_name
-
-
 def check_if_category_exists(category_name):
     """
         Returns TRUE is category exists
@@ -251,9 +237,7 @@ def get_items_latest_data():
         if count >= 10:
             break
         count += 1
-        inner_list = []
-        print item.item_name
-        inner_list.append(item.item_name)
+        inner_list = [item.item_name]
         item_cat_id = item.category_id
         # get the category name for the item
         category = session.query(Category). \
@@ -302,7 +286,7 @@ def get_item_description_data(cat_name, item_name):
     return item.description
 
 
-def update_item_data(item_name, cat_name, description):
+def update_item_description(item_name, cat_name, description):
     """
         update Item table using data from edit web page
     Args:
@@ -310,7 +294,7 @@ def update_item_data(item_name, cat_name, description):
         cat_name: category_name
         description: description of item
     Return:
-        return 'success' if inserted
+        return 'success' if updated
         return 'failed' if update fails
     """
     # get category_id for category_name
@@ -318,10 +302,14 @@ def update_item_data(item_name, cat_name, description):
         filter_by(category_name=cat_name).one()
 
     # get item details for this item
+    # get item details for this item and category
+    cat_id = category.category_id
     item = session.query(Item).filter_by(
-        item_name=item_name).one()
+        category_id=cat_id, item_name=item_name).one()
+
+    # set column to new value
     item.description = description
-    item.category_id = category.category_id
+
     try:
         session.add(item)
         session.commit()
@@ -331,18 +319,60 @@ def update_item_data(item_name, cat_name, description):
         return 'failed'
 
 
-def delete_item_data(item_name):
+# def update_item_image(item_name, cat_name, image):
+#     """
+#         update Item table using data from edit web page
+#     Args:
+#         item_name: item name
+#         cat_name: category_name
+#         image: image of item
+#     Return:
+#         return 'success' if updated
+#         return 'failed' if update fails
+#     """
+#     # get category_id for category_name
+#     category = session.query(Category). \
+#         filter_by(category_name=cat_name).one()
+#
+#     # get item details for this item
+#     # get item details for this item and category
+#     cat_id = category.category_id
+#     item = session.query(Item).filter_by(
+#         category_id=cat_id, item_name=item_name).one()
+#
+#     # set column to new value
+#     # f = open(image, "rb")
+#     # f_data = f.read()
+#     # f.close()
+#     # item.image = f_data
+#
+#     try:
+#         session.add(item)
+#         session.commit()
+#         return 'success'
+#     except sqlalchemy.exc.IntegrityError:
+#         session.rollback()
+#         return 'failed'
+
+
+def delete_item_data(category_name, item_name):
     """
         delete item in Item table
     Args:
+        category_name: name of category
         item_name: item name
     Return:
         return 'success' if inserted
         return 'failed' if delete fails
     """
-    # get item details for this item
+    # get category_id for category_name
+    category = session.query(Category). \
+        filter_by(category_name=category_name).one()
+
+    # get item details for this item and category
+    cat_id = category.category_id
     item = session.query(Item).filter_by(
-        item_name=item_name).one()
+        category_id=cat_id, item_name=item_name).one()
     try:
         session.delete(item)
         session.commit()

@@ -229,7 +229,7 @@ def show_category_items_item(category_name, item_name):
            methods=['GET', 'POST'])
 def add_category():
     """
-        route to to add a category
+        route to add a category
     """
     # check if user is logged in
     if 'username' not in login_session:
@@ -265,7 +265,7 @@ def add_category():
            methods=['GET', 'POST'])
 def add_item():
     """
-        route to to add an item
+        route to add an item
     """
 #    check if user is logged in
     if 'username' not in login_session:
@@ -282,13 +282,6 @@ def add_item():
             new_item_cat_name = request.form['new-item-category']
             new_item = request.form['new-item']
             new_item_desc = request.form['new-item-description']
-            # print 'here'
-            # if 'file' not in request.files:
-            #     print 'no files'
-            # files = request.files['file']
-            # print 'here2'
-            # # new_item_image = files[0].file.read()
-            # print files
             msg_status = dbmodule.add_item(new_item_cat_name,
                                            new_item,
                                            new_item_desc)
@@ -322,7 +315,8 @@ def add_item():
            methods=['GET', 'POST'])
 def edit_item(category_name, item_name):
     """
-        route to to edit an item
+        route to edit an item
+        user can only edit description
     """
     # check if user is logged in
     if 'username' not in login_session:
@@ -338,38 +332,34 @@ def edit_item(category_name, item_name):
             return redirect(url_for('show_catalog'))
 
         # get form data
-        cat_name = request.form['edit-category']
         desc = request.form['edit-desc']
 
         # update if user clicks Edit button
         if operation == 'Save':
-            msg_status = dbmodule.update_item_data(item_name, cat_name, desc)
+            msg_status = dbmodule.update_item_description(item_name,
+                                                          category_name,
+                                                          desc)
             if msg_status == 'success':
                 return render_template('message.html',
                                        msg_status=msg_status,
-                                       message='Successfully saved '
+                                       message='Successfully edited description for '
                                                + item_name
                                                + ' for Category '
-                                               + cat_name)
+                                               + category_name)
             else:
                 return render_template('message.html',
                                        msg_status=msg_status,
                                        message='Duplicate Item '
                                                + item_name
                                                + ' for Category '
-                                               + cat_name)
+                                               + category_name)
     else:
-        # get all category data for drop down
-        categories = dbmodule.get_category_data()
-        # get first category
-        first_category = dbmodule.get_category_first_data()
         # get description for item
         description = dbmodule.get_item_description_data(category_name,
                                                          item_name)
         return render_template('edit_item.html',
                                item_name=item_name,
-                               categories=categories,
-                               first_category=first_category,
+                               category_name=category_name,
                                description=description)
 
 
@@ -378,7 +368,7 @@ def edit_item(category_name, item_name):
            methods=['GET', 'POST'])
 def delete_item(category_name, item_name):
     """
-        route to to delete an item
+        route to delete an item
     """
     # check if user is logged in
     if 'username' not in login_session:
@@ -395,7 +385,8 @@ def delete_item(category_name, item_name):
 
         # delete item if user clicks Delete button
         if operation == 'Delete':
-            msg_status = dbmodule.delete_item_data(item_name)
+            msg_status = dbmodule.delete_item_data(category_name,
+                                                   item_name)
             if msg_status == 'success':
                 return render_template('message.html',
                                        msg_status=msg_status,
@@ -411,134 +402,50 @@ def delete_item(category_name, item_name):
                                                + ' for Category '
                                                + category_name)
     else:
-        # get category name for item
-        cat_name = dbmodule.get_category_name_for_item_data(item_name)
         return render_template('delete_item.html',
                                item_name=item_name,
-                               category_name=cat_name)
+                               category_name=category_name)
 
 
-"""ASM
-
-# Create a new restaurant
-@app.route('/restaurant/new/', methods=['GET', 'POST'])
-def newRestaurant():
-    if request.method == 'POST':
-        newRestaurant = Restaurant(name=request.form['name'])
-        session.add(newRestaurant)
-        session.commit()
-        return redirect(url_for('showRestaurants'))
-    else:
-        return render_template('newRestaurant.html')
-    # return "This page will be for making a new restaurant"
-
-# Edit a restaurant
-
-
-@app.route('/restaurant/<int:restaurant_id>/edit/', methods=['GET', 'POST'])
-def editRestaurant(restaurant_id):
-    editedRestaurant = session.query(
-        Restaurant).filter_by(id=restaurant_id).one()
-    if request.method == 'POST':
-        if request.form['name']:
-            editedRestaurant.name = request.form['name']
-            return redirect(url_for('showRestaurants'))
-    else:
-        return render_template(
-            'editRestaurant.html', restaurant=editedRestaurant)
-
-    # return 'This page will be for editing restaurant %s' % restaurant_id
-
-# Delete a restaurant
-
-
-@app.route('/restaurant/<int:restaurant_id>/delete/', methods=['GET', 'POST'])
-def deleteRestaurant(restaurant_id):
-    restaurantToDelete = session.query(
-        Restaurant).filter_by(id=restaurant_id).one()
-    if request.method == 'POST':
-        session.delete(restaurantToDelete)
-        session.commit()
-        return redirect(
-            url_for('showRestaurants', restaurant_id=restaurant_id))
-    else:
-        return render_template(
-            'deleteRestaurant.html', restaurant=restaurantToDelete)
-    # return 'This page will be for deleting restaurant %s' % restaurant_id
+# display page to add a image
+# commented: need to understand how to convert filestorage to blob
+# @app.route('/catalog/<string:category_name>/<string:item_name>/addimage/',
+#            methods=['GET', 'POST'])
+# def add_item_image(category_name, item_name):
+#     """
+#         route to add an iimage
+#     """
+#     # check if user is logged in
+#     # if 'username' not in login_session:
+#     #     return redirect('/login')
+#
+#     if request.method == 'POST':
+#         if 'file' not in request.files:
+#             print 'no files'
+#         files = request.files['file']
+#         msg_status = dbmodule.update_item_image(item_name,
+#                                                 category_name,
+#                                                 files)
+#         if msg_status == 'success':
+#             return render_template('message.html',
+#                                    msg_status=msg_status,
+#                                    message='Successfully saved image '
+#                                            + item_name
+#                                            + ' for Category '
+#                                            + category_name)
+#         else:
+#             return render_template('message.html',
+#                                    msg_status=msg_status,
+#                                    message='Error in saving image '
+#                                            + item_name
+#                                            + ' for Category '
+#                                            + category_name)
+#     else:
+#         return render_template('add_item_image.html',
+#                                item_name=item_name,
+#                                category_name=category_name)
 
 
-# Show a restaurant menu
-@app.route('/restaurant/<int:restaurant_id>/')
-@app.route('/restaurant/<int:restaurant_id>/menu/')
-def showMenu(restaurant_id):
-    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    items = session.query(MenuItem).filter_by(
-        restaurant_id=restaurant_id).all()
-    return render_template('menu.html', items=items, restaurant=restaurant)
-    # return 'This page is the menu for restaurant %s' % restaurant_id
-
-# Create a new menu item
-
-
-@app.route(
-    '/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
-def newMenuItem(restaurant_id):
-    if request.method == 'POST':
-        newItem = MenuItem(name=request.form['name'], description=request.form[
-                           'description'], price=request.form['price'], course=request.form['course'], restaurant_id=restaurant_id)
-        session.add(newItem)
-        session.commit()
-
-        return redirect(url_for('showMenu', restaurant_id=restaurant_id))
-    else:
-        return render_template('newmenuitem.html', restaurant_id=restaurant_id)
-
-    return render_template('newMenuItem.html', restaurant=restaurant)
-    # return 'This page is for making a new menu item for restaurant %s'
-    # %restaurant_id
-
-# Edit a menu item
-
-
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit',
-           methods=['GET', 'POST'])
-def editMenuItem(restaurant_id, menu_id):
-    editedItem = session.query(MenuItem).filter_by(id=menu_id).one()
-    if request.method == 'POST':
-        if request.form['name']:
-            editedItem.name = request.form['name']
-        if request.form['description']:
-            editedItem.description = request.form['name']
-        if request.form['price']:
-            editedItem.price = request.form['price']
-        if request.form['course']:
-            editedItem.course = request.form['course']
-        session.add(editedItem)
-        session.commit()
-        return redirect(url_for('showMenu', restaurant_id=restaurant_id))
-    else:
-
-        return render_template(
-            'editmenuitem.html', restaurant_id=restaurant_id, menu_id=menu_id, item=editedItem)
-
-    # return 'This page is for editing menu item %s' % menu_id
-
-# Delete a menu item
-
-
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete',
-           methods=['GET', 'POST'])
-def deleteMenuItem(restaurant_id, menu_id):
-    itemToDelete = session.query(MenuItem).filter_by(id=menu_id).one()
-    if request.method == 'POST':
-        session.delete(itemToDelete)
-        session.commit()
-        return redirect(url_for('showMenu', restaurant_id=restaurant_id))
-    else:
-        return render_template('deleteMenuItem.html', item=itemToDelete)
-    # return "This page is for deleting menu item %s" % menu_id
-
-"""
 if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0', port=8000)
