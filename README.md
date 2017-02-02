@@ -44,7 +44,7 @@ The project uses the following software:
 + Following routes are implemented to view data in JSON format
     + /catalog/json route to get all catalog data
     + /catalog/categories/json route to get all categories data
-    + /catalog/item/json route to get all items data
+    + /catalog/items/json route to get all items data
     + /catalog/category_name/items/json route to get all items data for a category
     + /catalog/category_name/item_name/json route to get item details for an item of a category
     + /catalog/latestitems/json route to get latest items

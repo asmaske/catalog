@@ -48,7 +48,9 @@ def category_items_json(category_name):
     """
     check_category_exists = dbmodule.check_if_category_exists(category_name)
     if not check_category_exists:
-        message = 'Category: ' + category_name + ' does not exists...NOTE: search is case sensitive'
+        message = 'Category: ' + \
+                  category_name + \
+                  ' does not exists...NOTE: search is case sensitive'
         msg = {"message": message}
         json_string = json.dumps(msg)
         return jsonify(json.loads(json_string))
@@ -92,10 +94,13 @@ def category_items_item_json(category_name, item_name):
     """
     check_category_exists = dbmodule.check_if_category_exists(category_name)
     if not check_category_exists:
-        message = 'Category: ' + category_name + ' does not exists...NOTE: search is case sensitive'
+        message = 'Category: ' + \
+                  category_name + \
+                  ' does not exists...NOTE: search is case sensitive'
         msg = {"message": message}
         json_string = json.dumps(msg)
         return jsonify(json.loads(json_string))
 
-    json_string = dbmodule.get_category_items_item_data_for_json(category_name, item_name)
+    json_string = dbmodule.get_category_items_item_data_for_json(
+        category_name, item_name)
     return jsonify(json.loads(json_string))

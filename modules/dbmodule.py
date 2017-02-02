@@ -146,14 +146,20 @@ def get_category_items_item_data(category_name, item_name):
         category_name: category name for which items are to be selected
         item_name: item name for which item details to be selected
     """
-    category = session.query(Category).\
-        filter_by(category_name=category_name).one()
+    try:
+        category = session.query(Category). \
+            filter_by(category_name=category_name).one()
+    except sqlalchemy.orm.exc.NoResultFound:
+        return None
 
     cat_id = category.category_id
 
     # get item details for this item
-    category_items_item = session.query(Item).filter_by(
-        category_id=cat_id, item_name=item_name).one()
+    try:
+        category_items_item = session.query(Item).filter_by(
+            category_id=cat_id, item_name=item_name).one()
+    except sqlalchemy.orm.exc.NoResultFound:
+        return None
 
     return category_items_item
 

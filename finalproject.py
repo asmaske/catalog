@@ -154,18 +154,20 @@ def show_catalog():
         item_count = dbmodule.get_item_count()
 
         # get category and it's item count
-        categories_and_item_count = dbmodule.get_categories_and_item_count_data()
+        categories_and_item_count =\
+            dbmodule.get_categories_and_item_count_data()
         items_latest = dbmodule.get_items_latest_data()
         if 'username' not in login_session:
             login_status = 'FALSE'
         else:
             login_status = 'TRUE'
-        return render_template('category.html',
-                               category_count=cat_count,
-                               item_count=item_count,
-                               categories_and_item_count=categories_and_item_count,
-                               items_latest=items_latest,
-                               login_status=login_status)
+        return render_template(
+            'category.html',
+            category_count=cat_count,
+            item_count=item_count,
+            categories_and_item_count=categories_and_item_count,
+            items_latest=items_latest,
+            login_status=login_status)
 
 
 # display page for items of a category
@@ -185,14 +187,21 @@ def show_category_items(category_name):
                 return redirect(url_for('add_item'))
     else:
         # get category and it's item count
-        categories_and_item_count = dbmodule.get_categories_and_item_count_data()
+        categories_and_item_count =\
+            dbmodule.get_categories_and_item_count_data()
         category_items, items_count = \
             dbmodule.get_items_and_count_data(category_name)
-        return render_template('category_items.html',
-                               categories_and_item_count=categories_and_item_count,
-                               category_items=category_items,
-                               category_name=category_name,
-                               count=items_count)
+        if 'username' not in login_session:
+            login_status = 'FALSE'
+        else:
+            login_status = 'TRUE'
+        return render_template(
+            'category_items.html',
+            login_status=login_status,
+            categories_and_item_count=categories_and_item_count,
+            category_items=category_items,
+            category_name=category_name,
+            count=items_count)
 
 
 # display page for description of an item
@@ -217,11 +226,23 @@ def show_category_items_item(category_name, item_name):
     else:
         category_items_item =\
             dbmodule.get_category_items_item_data(category_name, item_name)
-        itm_desc = category_items_item.description
-        return render_template('category_items_item.html',
-                               category_name=category_name,
-                               item_name=item_name,
-                               description=itm_desc)
+        if 'username' not in login_session:
+            login_status = 'FALSE'
+        else:
+            login_status = 'TRUE'
+        if category_items_item is not None:
+            itm_desc = category_items_item.description
+            return render_template('category_items_item.html',
+                                   login_status=login_status,
+                                   category_name=category_name,
+                                   item_name=item_name,
+                                   description=itm_desc)
+        else:
+            message = category_name + ' and ' + item_name +\
+                      ' combination does not exist'
+            login_status = login_status
+            msg_status = 'failed'
+            return render_message_page(login_status, msg_status, message)
 
 
 # display page for adding a new category
@@ -234,6 +255,8 @@ def add_category():
     # check if user is logged in
     if 'username' not in login_session:
         return redirect('/login')
+    else:
+        login_status = 'TRUE'
 
     if request.method == 'POST':
         operation = ''
@@ -245,19 +268,22 @@ def add_category():
         if operation == 'Add':
             new_cat_name = request.form['new-category']
             msg_status = dbmodule.add_category(new_cat_name)
-            if msg_status == 'success':
-                return render_template('message.html',
-                                       msg_status=msg_status,
-                                       message='Successfully added '
-                                               + new_cat_name)
+            if 'username' not in login_session:
+                login_status = 'FALSE'
             else:
-                return render_template('message.html',
-                                       msg_status=msg_status,
-                                       message='Duplicate Category '
-                                               + new_cat_name)
-        return
+                login_status = 'TRUE'
+            if msg_status == 'success':
+                login_status = login_status
+                msg_status = msg_status
+                message = 'Successfully added ' + new_cat_name
+                return render_message_page(login_status, msg_status, message)
+            else:
+                login_status = login_status
+                msg_status = msg_status
+                message = 'Duplicate Category ' + new_cat_name
+                return render_message_page(login_status, msg_status, message)
     else:
-        return render_template('add_category.html')
+        return render_template('add_category.html', login_status=login_status)
 
 
 # display page for adding a new item
@@ -270,6 +296,8 @@ def add_item():
 #    check if user is logged in
     if 'username' not in login_session:
         return redirect('/login')
+    else:
+        login_status = 'TRUE'
 
     if request.method == 'POST':
         operation = ''
@@ -286,26 +314,24 @@ def add_item():
                                            new_item,
                                            new_item_desc)
             if msg_status == 'success':
-                return render_template('message.html',
-                                       msg_status=msg_status,
-                                       message='Successfully added '
-                                               + new_item
-                                               + ' for Category '
-                                               + new_item_cat_name)
+                login_status = login_status
+                msg_status = msg_status
+                message = 'Successfully added ' + new_item\
+                          + ' for Category ' + new_item_cat_name
+                return render_message_page(login_status, msg_status, message)
             else:
-                return render_template('message.html',
-                                       msg_status=msg_status,
-                                       message='Duplicate Item '
-                                               + new_item
-                                               + ' for Category '
-                                               + new_item_cat_name)
-        return
+                login_status = login_status
+                msg_status = msg_status
+                message = 'Duplicate Item ' + new_item\
+                          + ' for Category ' + new_item_cat_name
+                return render_message_page(login_status, msg_status, message)
     else:
         # get all category data for drop down
         categories = dbmodule.get_category_data()
         # get first category
         first_category = dbmodule.get_category_first_data()
         return render_template('add_item.html',
+                               login_status=login_status,
                                categories=categories,
                                first_category=first_category)
 
@@ -321,6 +347,8 @@ def edit_item(category_name, item_name):
     # check if user is logged in
     if 'username' not in login_session:
         return redirect('/login')
+    else:
+        login_status = 'TRUE'
 
     if request.method == 'POST':
         operation = ''
@@ -340,24 +368,23 @@ def edit_item(category_name, item_name):
                                                           category_name,
                                                           desc)
             if msg_status == 'success':
-                return render_template('message.html',
-                                       msg_status=msg_status,
-                                       message='Successfully edited description for '
-                                               + item_name
-                                               + ' for Category '
-                                               + category_name)
+                login_status = login_status
+                msg_status = msg_status
+                message = 'Successfully deleted ' + item_name\
+                          + ' for Category ' + category_name
+                return render_message_page(login_status, msg_status, message)
             else:
-                return render_template('message.html',
-                                       msg_status=msg_status,
-                                       message='Duplicate Item '
-                                               + item_name
-                                               + ' for Category '
-                                               + category_name)
+                login_status = login_status
+                msg_status = msg_status
+                message = 'Duplicate Item ' + item_name\
+                          + ' for Category ' + category_name
+                return render_message_page(login_status, msg_status, message)
     else:
         # get description for item
         description = dbmodule.get_item_description_data(category_name,
                                                          item_name)
         return render_template('edit_item.html',
+                               login_status=login_status,
                                item_name=item_name,
                                category_name=category_name,
                                description=description)
@@ -373,6 +400,8 @@ def delete_item(category_name, item_name):
     # check if user is logged in
     if 'username' not in login_session:
         return redirect('/login')
+    else:
+        login_status = 'TRUE'
 
     if request.method == 'POST':
         operation = ''
@@ -388,23 +417,29 @@ def delete_item(category_name, item_name):
             msg_status = dbmodule.delete_item_data(category_name,
                                                    item_name)
             if msg_status == 'success':
-                return render_template('message.html',
-                                       msg_status=msg_status,
-                                       message='Successfully deleted '
-                                               + item_name
-                                               + ' for Category '
-                                               + category_name)
+                login_status = login_status
+                msg_status = msg_status
+                message = 'Successfully deleted ' + item_name\
+                          + ' for Category ' + category_name
+                return render_message_page(login_status, msg_status, message)
             else:
-                return render_template('message.html',
-                                       msg_status-msg_status,
-                                       message='Problem deleting '
-                                               + item_name
-                                               + ' for Category '
-                                               + category_name)
+                login_status = login_status
+                msg_status = msg_status
+                message = 'Problem deleting '\
+                          + item_name + ' for Category ' + category_name
+                return render_message_page(login_status, msg_status, message)
     else:
         return render_template('delete_item.html',
+                               login_status=login_status,
                                item_name=item_name,
                                category_name=category_name)
+
+
+def render_message_page(login_status, msg_status, message):
+    return render_template('message.html',
+                           login_status=login_status,
+                           msg_status=msg_status,
+                           message=message)
 
 
 # display page to add a image
