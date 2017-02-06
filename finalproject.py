@@ -211,10 +211,25 @@ def show_category_items_item(category_name, item_name):
     """
         route to display item description for an item on web page
     """
+    if 'username' not in login_session:
+        login_status = 'FALSE'
+    else:
+        login_status = 'TRUE'
+
     if request.method == 'POST':
         operation = ''
         if request.form['edit-delete']:
             operation = request.form['edit-delete']
+
+        # check if user created this item
+        # if not then return error
+        user_owner = dbmodule.get_item_username_data(category_name, item_name)
+        if user_owner != login_session['username']:
+            login_status = login_status
+            msg_status = 'failed'
+            message = 'Only user who added item can edit/delete this item'
+            return render_message_page(login_status, msg_status, message)
+
         if operation == 'Edit':
             return redirect(url_for('edit_item',
                                     category_name=category_name,
@@ -226,10 +241,6 @@ def show_category_items_item(category_name, item_name):
     else:
         category_items_item =\
             dbmodule.get_category_items_item_data(category_name, item_name)
-        if 'username' not in login_session:
-            login_status = 'FALSE'
-        else:
-            login_status = 'TRUE'
         if category_items_item is not None:
             itm_desc = category_items_item.description
             return render_template('category_items_item.html',
@@ -310,9 +321,11 @@ def add_item():
             new_item_cat_name = request.form['new-item-category']
             new_item = request.form['new-item']
             new_item_desc = request.form['new-item-description']
+            new_item_username = login_session['username']
             msg_status = dbmodule.add_item(new_item_cat_name,
                                            new_item,
-                                           new_item_desc)
+                                           new_item_desc,
+                                           new_item_username)
             if msg_status == 'success':
                 login_status = login_status
                 msg_status = msg_status

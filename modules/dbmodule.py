@@ -292,6 +292,24 @@ def get_item_description_data(cat_name, item_name):
     return item.description
 
 
+def get_item_username_data(cat_name, item_name):
+    """
+        Returns username for an item of a given category
+    Args:
+        cat_name: category name
+        item_name: item name
+    """
+    # get category id for category name
+    category = session.query(Category). \
+        filter_by(category_name=cat_name).one()
+    cat_id = category.category_id
+
+    # get item details for this item
+    item = session.query(Item).filter_by(
+        item_name=item_name, category_id=cat_id).one()
+    return item.username
+
+
 def update_item_description(item_name, cat_name, description):
     """
         update Item table using data from edit web page
@@ -389,13 +407,14 @@ def delete_item_data(category_name, item_name):
 
 
 def add_item(new_item_cat_name, new_item,
-             new_item_desc):
+             new_item_desc, new_item_username):
     """
         add item in Item table
     Args:
         new_item_cat_name: new item's category
         new_item: new item's name
         new_item_desc: new item's description
+        new_item_username: username adding item
     Return:
         return 'success' if inserted
         return 'failed' if item+category_id composite exists
@@ -405,6 +424,7 @@ def add_item(new_item_cat_name, new_item,
         filter_by(category_name=new_item_cat_name).one()
     new_item = Item(item_name=new_item,
                     description=new_item_desc,
+                    username=new_item_username,
                     create_ts=datetime.datetime.now(),
                     category=category)
     try:
